@@ -1,0 +1,1 @@
+After taking a bit of a break, I came back to this project. Added an actual map system with transitions between maps, also added a grappling hook that can be used with space. Main goal at this point is buidling towards a Metroidvania type game.
