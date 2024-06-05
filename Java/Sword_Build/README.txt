@@ -1,0 +1,1 @@
+Added Sword (used with space), hitbox is not smooth on purpose, supposed to represent fencing type strike with a ready state (smaller hitbox) and a strike state (larger hitbox). Hitbox is also actually multiple small hitboxed with the intention to create different sword patterns in the future (such as an overhead slash)
