@@ -1,3 +1,7 @@
+The purpose of this project was to try building a full product from scratch in Java. So far this has allowed me to learn a lot more about how to manage discrete parts of a project. Additionally, this has gotten me much more comfortable with multiple aspects of Java and the overall project management mindset.
+
+------------------------------------
+ 
 Order of builds:
 
 Simple Game       - Apr 17, 2024
