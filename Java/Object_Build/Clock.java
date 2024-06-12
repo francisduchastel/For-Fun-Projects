@@ -7,8 +7,6 @@ public class Clock {
 
     }
 
-
-
     public static int Timer_ticker(int timer_value, int timer_tick, int Max_timer) {
 
 
