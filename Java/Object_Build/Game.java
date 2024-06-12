@@ -10,118 +10,124 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Game extends JFrame implements KeyListener {
+    
+    Clock Time = new Clock();
+
+    Painter Paint = new Painter();
+    
+    
     //character location values
-    private static int character_x = 500;
-    private static int character_y = 0;
+    public static int character_x = 500;
+    public static int character_y = 0;
 
     //character properties
-    private int character_width = 30;
-    private int character_height = 60;
+    public int character_width = 30;
+    public int character_height = 60;
     
     //Screen
-    private int Screen_Width = 1000;
-    private int Screen_height = 600;
+    public int Screen_Width = 1000;
+    public int Screen_height = 600;
     
     //physics constants
-    private int Gravity = 1;
-    private int Friction = 0;
-    private Boolean Frictionless = false;
+    public int Gravity = 1;
+    public int Friction = 0;
+    public Boolean Frictionless = false;
 
     //character moving
-    private String Jump_State = "Grounded";
-    private int Upwards_velocity = 0;
-    private int Sideways_velocity = 0;
-    private Boolean Falling = false;
-    private Boolean Jumped = false;
-    private Boolean Walking = false;
-    private int Walk_Timer = 0;
-    private int Moving_Direction = 0; // Left = -1, Right = +1
-    private String Character_Facing_Direction = "Right";
-    private String Moving_State = "";
-    private int Walk_Speed = 7;
-    private Boolean frozen = false;
+    public String Jump_State = "Grounded";
+    public int Upwards_velocity = 0;
+    public int Sideways_velocity = 0;
+    public Boolean Falling = false;
+    public Boolean Jumped = false;
+    public Boolean Walking = false;
+    public int Walk_Timer = 0;
+    public int Moving_Direction = 0; // Left = -1, Right = +1
+    public String Character_Facing_Direction = "Right";
+    public String Moving_State = "";
+    public int Walk_Speed = 7;
+    public Boolean frozen = false;
 
     //Grapple properties
 
-    private boolean grapple_active = false;
-    private boolean grapple_gotten = true;
-    private int grapple_x = 0;
-    private int grapple_y = 0;
-    private int grapple_size = 5;
-    private int grapple_speed = 10;
-    private int grapple_number = 0;
-    private int grapple_number_max = 2;
+    public boolean grapple_active = false;
+    public boolean grapple_gotten = true;
+    public int grapple_x = 0;
+    public int grapple_y = 0;
+    public int grapple_size = 5;
+    public int grapple_speed = 10;
+    public int grapple_number = 0;
+    public int grapple_number_max = 2;
     //false = extending, true = retracting
-    private boolean grapple_state = false;
+    public boolean grapple_state = false;
 
     // rang properties
-    private boolean boomerang_gotten = true;
-    private boolean boomerang_active = false;
-    private int boomerang_x = 0;
-    private int boomerang_y = 0;
-    private int boomerang_size = 5;
-    private int boomerang_speed_max = 25;
-    private int boomerang_speed = 0;
-    private int boomerang_drag = 1;
-    private int boomerang_drag_directional = 0;
+    public boolean boomerang_gotten = true;
+    public static boolean boomerang_active = false;
+    public int boomerang_x = 0;
+    public int boomerang_y = 0;
+    public int boomerang_size = 5;
+    public int boomerang_speed_max = 25;
+    public int boomerang_speed = 0;
+    public int boomerang_drag = 1;
+    public int boomerang_drag_directional = 0;
     //false = extending, true = retracting
-    private boolean boomerang_state = false;
+    public boolean boomerang_state = false;
 
 
     //sword properties
     //0 = holstered, 1 = 1st ready, 2 = first swing, 3 = 2nd ready, 4 = 2nd swing
-    private int sword_state = 0;
-    private int sword_length = 80;
-    private int sword_width = 5;
-    private int sword_ready_length = 30;
-    private int swing_time = 30;
-    private int ready_time = 10;
-    private int sword_timer = 0;
-    private int swing_displacement_speed = 2;
-    private int swing_displacement_time = 40;
-    private int swing_displacement_timer = 0;
-    private int[][] hit_boxes = new int[10][4];
+    public int sword_state = 0;
+    public int sword_length = 80;
+    public int sword_width = 5;
+    public int sword_ready_length = 30;
+    public int swing_time = 30;
+    public int ready_time = 10;
+    public int sword_timer = 0;
+    public int swing_displacement_speed = 2;
+    public int swing_displacement_time = 40;
+    public int swing_displacement_timer = 0;
+    public int[][] hit_boxes = new int[10][4];
 
 
     // grind properties
 
-    private boolean grind_gotten = true;
-    private boolean grind_mode = false;
-    private int grind_speed = 10;
+    public boolean grind_gotten = true;
+    public boolean grind_mode = false;
+    public int grind_speed = 10;
 
 
     //camera properties
 
-    private int Cam_velocity_vertical = 0;
-    private int Cam_velocity_horizontal = 0;
-    private Boolean Cam_Detached = false;
+    public int Cam_velocity_vertical = 0;
+    public int Cam_velocity_horizontal = 0;
+    public Boolean Cam_Detached = false;
 
 
-    private int Timer_Value = 0;
+    public int Timer_Value = 0;
 
 
     //Map Properties
 
-    private int Map_Destination = 100;
+    public int Map_Destination = 100;
 
-    private boolean Transitioning = false;
-    private boolean Transition_Apex = false;
-    private int Transition_Value = 0;
+    public static boolean Transitioning = false;
+    public static boolean Transition_Apex = false;
+    public static int Transition_Value = 0;
 
-    private int Spawn_Value = 19;
+    public int Spawn_Value = 19;
 
-    private int[][] Map_Parts = new int[0][0];
+    public int[][] Map_Parts = new int[0][0];
 
 
 
 
     //Menu properties
-    private boolean In_Title = true;
-    private boolean In_Menu = false;
-    private int Button_Index_Vertical = 0;
-    private int Button_Index_Horizontal = 0;
-    private int Max_Button_Index_Vertical = 4;
-    private int Max_Button_Index_Horizontal = 1;
+    public boolean In_Title = true;
+    public boolean In_Menu = false;
+    public int Button_Index_Vertical = 0;
+    public int Button_Index_Horizontal = 0;
+    public int Max_Button_Index_Vertical = 4;
+    public int Max_Button_Index_Horizontal = 1;
 
 
     public Game() {
@@ -144,24 +150,36 @@ public class Game extends JFrame implements KeyListener {
 
                 if (In_Title == false) {
 
-                    DrawMap(g);
+                    Paint.DrawMap(g, Map_Parts);
 
-                    DrawGrapple(g);
+                    Paint.DrawGrapple(g, grapple_gotten, grapple_active, grapple_x, grapple_y, grapple_size, character_x, character_y, character_height, character_width);
 
-                    DrawBoomerang(g);
+                    Paint.DrawBoomerang(g, boomerang_active, boomerang_x, boomerang_y, boomerang_size);
 
                     if (sword_state != 0) {
-                        DrawSword(g);
+                        Paint.DrawSword(g, hit_boxes);
                     }
                     
-                    DrawCharacter(g);
+                    //
+
+                    Walk_Timer = Time.Timer_ticker(Walk_Timer, 1, 11);
+
+                    if (Walk_Timer == 0) {
+                        Timer_Value = Time.Timer_ticker(Timer_Value, 1, 2);
+                    }
+
+                    Paint.DrawCharacter(g, Walk_Timer, Timer_Value, grind_mode, Sideways_velocity, Jump_State, Character_Facing_Direction, character_x, character_y);
+
+                    //
     
-                    DrawTransitions(g);   
+                    Paint.DrawTransitions(g, Transitioning, Screen_height, Screen_Width, Transition_Value, Transition_Apex, Map_Parts, Map_Destination);
+
+                    //
 
                 } else if (In_Title == true) {
 
 
-                    DrawTitle(g);
+                    Paint.DrawTitle(g, Max_Button_Index_Horizontal, Max_Button_Index_Vertical, Button_Index_Horizontal, Button_Index_Vertical, Screen_Width, In_Title);
 
                 }
 
@@ -181,251 +199,10 @@ public class Game extends JFrame implements KeyListener {
         setFocusable(true);
     }
 
-    private void DrawTitle(Graphics g) {
+   
 
-        Max_Button_Index_Horizontal = 1;
-        Max_Button_Index_Vertical = 4;
 
-        if (Button_Index_Horizontal < 0) {
-            Button_Index_Horizontal = Max_Button_Index_Horizontal - 1;
-        }
-
-        if (Button_Index_Vertical < 0) {
-            Button_Index_Vertical = Max_Button_Index_Vertical - 1;
-        }
-
-
-
-
-        Draw_Image(Screen_Width/3, 150, "Images/Title/Save1.png", g);
-
-        Draw_Image(Screen_Width/3, 225, "Images/Title/Save2.png", g);
-
-        Draw_Image(Screen_Width/3, 300, "Images/Title/Save3.png", g);
-
-        Draw_Image(Screen_Width/3, 375, "Images/Title/Exit.png", g);
-
-        Draw_Menu_Selection(g);
-
-    }
-
-    private void Draw_Menu_Selection(Graphics g) {
-        //true for Title, false for Inv
-
-        if (In_Title == true) {
-
-            drawSprite(g, Screen_Width/3, 150 + (Button_Index_Vertical * 75), 20, 4, Color.BLACK);
-            drawSprite(g, Screen_Width/3, 150 + (Button_Index_Vertical * 75), 4, 20, Color.BLACK);
-
-            drawSprite(g, Screen_Width/3 + 280, 150 + (Button_Index_Vertical * 75), 20, 4, Color.BLACK);
-            drawSprite(g, Screen_Width/3 + 296, 150 + (Button_Index_Vertical * 75), 4, 20, Color.BLACK);
-
-            drawSprite(g, Screen_Width/3, 196 + (Button_Index_Vertical * 75), 20, 4, Color.BLACK);
-            drawSprite(g, Screen_Width/3, 180 + (Button_Index_Vertical * 75), 4, 20, Color.BLACK);
-
-            drawSprite(g, Screen_Width/3 + 280, 196 + (Button_Index_Vertical * 75), 20, 4, Color.BLACK);
-            drawSprite(g, Screen_Width/3 + 296, 180 + (Button_Index_Vertical * 75), 4, 20, Color.BLACK);
-
-
-        }
-
-
-    }
-
-    private void DrawCharacter(Graphics g) {
-
-        //Draw character
-
-        Walk_Timer += 1;
-
-        if (Walk_Timer == 10) {
-            Walk_Timer = 0;
-            Timer_Value += 1;
-            Timer_Value %= 2;
-        }
-
-        if (grind_mode == false) {
-            if (Sideways_velocity != 0) {
-                Moving_State = "_Move" + (Timer_Value + 1);
-            } else {
-                Moving_State = "";
-            }            
-        } else {
-            Moving_State = "_Grind";
-        }
-
-
-
-        String Character_Image = "Images/Character_" + Character_Facing_Direction + Moving_State;
-
-
-        if (Jump_State.equals("Grounded") == false) {
-            Character_Image += "_Airbourn";
-        }
-
-        Character_Image += ".png";
-
-        Draw_Image(character_x, character_y, Character_Image, g);
-        
-
-    }
-
-    private void DrawSword(Graphics g) {
-
-
-        for (int i = 0; i < hit_boxes.length; i++) {
-
-            drawSprite(g, hit_boxes[i][0], hit_boxes[i][1], hit_boxes[i][2], hit_boxes[i][3], Color.RED);
-
-        }
-
-
-    }
-
-    private void DrawGrapple(Graphics g) {
-
-
-        if (grapple_gotten == true && grapple_active == true) {
-
-            drawSprite(g, grapple_x, grapple_y, grapple_size, grapple_size, Color.PINK);
-
-        }
-
-
-
-        if (grapple_active == true && (grapple_x > character_x + character_width || grapple_x < character_x) && (grapple_y < character_y || grapple_y > character_y + character_height)) {
-            boolean done = false;
-            int chain_x = grapple_x + 2;
-            int chain_y = grapple_y + 2;
-
-
-            while (done == false) {
-
-                if (chain_x < character_x) {
-                    chain_x++;
-                } else if (chain_x > character_x) {
-                    chain_x--;
-                } else {
-                    done = true;
-                }
-
-                if (chain_y < character_y) {
-                    chain_y++;
-                } else if (chain_y > character_y) {
-                    chain_y--;
-                } else {
-                    done = true;
-                }
-
-                drawSprite(g, chain_x, chain_y, 1, 1, new Color(50, 50, 50, 200) );
-
-
-            }
-
-        }
-
-
-
-    }
-
-    private void DrawBoomerang(Graphics g) {
-
-        if (boomerang_active == true) {
-          drawSprite(g, boomerang_x, boomerang_y, boomerang_size, boomerang_size, Color.GREEN);  
-        }
-        
-
-    }
-
-    private void DrawMap(Graphics g) {
-
-        for (int q = 0; q < Map_Parts.length; q++) {
-
-            if (Map_Parts[q][4] == 1) {
-                drawSprite(g, Map_Parts[q][0], Map_Parts[q][1], Map_Parts[q][2], Map_Parts[q][3], Color.black);
-            } else if (Map_Parts[q][4] == 2) {
-                drawSprite(g, Map_Parts[q][0], Map_Parts[q][1], Map_Parts[q][2], Map_Parts[q][3], Color.gray);
-            } else if (Map_Parts[q][4] == 3) {
-                drawSprite(g, Map_Parts[q][0], Map_Parts[q][1], Map_Parts[q][2], Map_Parts[q][3], Color.lightGray);
-            } else if (Map_Parts[q][4] == 0) {
-                
-                for (int i = 0; i < 175; i++) {
-                    drawSprite(g, Map_Parts[q][0] + i, Map_Parts[q][1], Map_Parts[q][2] / 2, Map_Parts[q][3], new Color(0, 0, 0, 175 - i));
-                }
-            } else if (Map_Parts[q][4] == 5) {
-
-                for (int j = 174; j >= 0; j--) {
-                    drawSprite(g, Map_Parts[q][0] + 10 - j, Map_Parts[q][1], Map_Parts[q][2] / 2, Map_Parts[q][3], new Color(0, 0, 0, 175 -  j));
-                }
-
-            } else if (Map_Parts[q][4] == 6) {
-                drawSprite(g, Map_Parts[q][0], Map_Parts[q][1], Map_Parts[q][2], Map_Parts[q][3], Color.gray);
-
-            }
-
-
-        }
-
-
-    }
-
-    private void DrawTransitions(Graphics g) {
-
-        if (Transitioning == true) {
-
-            drawSprite(g, 0, 0, Screen_Width, Screen_height, new Color(0, 0, 0, Transition_Value));
-
-            if (Transition_Apex == false) {
-                Transition_Value += 15;
-
-                
-
-            } else {
-
-                Transition_Value -= 15;
-
-            }
-
-            if (Transition_Value == 255) {
-                Transition_Apex = true;
-
-                Map_Parts = Load_Map(Map_Destination);
-                
-                Load_Spawn(Map_Parts, Spawn_Value);
-
-
-            }
-
-
-            if (Transition_Value == 0 && Transition_Apex == true) {
-
-                Transitioning = false;
-                Transition_Apex = false;
-
-            }
-
-        }
-
-    }
-
-    private void drawSprite(Graphics g, int Start_X, int Start_Y, int width, int height, Color color) {
-        g.setColor(color);
-        g.fillRect(Start_X, Start_Y, width, height);
-    }
-
-    private void Draw_Image(int x, int y, String Image_Path, Graphics g) {
-
-        try {
-            File pathToFile = new File(Image_Path);
-            Image image = ImageIO.read(pathToFile);
-            g.drawImage(image, x, y, null);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-
-    private void update() {
+    public void update() {
 
 
         if (In_Title == false) {
@@ -448,6 +225,11 @@ public class Game extends JFrame implements KeyListener {
             Update_Collision();
     
             Update_Camera();
+
+            if (Transitioning == true) {
+                Update_Transition();
+            }
+            
     
 
             repaint();
@@ -455,6 +237,39 @@ public class Game extends JFrame implements KeyListener {
         }
 
 
+
+    }
+
+    public void Update_Transition() {
+
+        if (Transition_Apex == false) {
+            Transition_Value = Clock.Timer_ticker(Transition_Value, 15, 256);
+
+            
+
+        } else {
+
+            Transition_Value = Clock.Timer_ticker(Transition_Value, -15, 256);
+
+        }
+
+        if (Transition_Value == 255) {
+            Transition_Apex = true;
+
+            Map_Parts = Load_Map(Map_Destination);
+            
+            Load_Spawn(Map_Parts, Spawn_Value);
+
+
+        }
+
+
+        if (Transition_Value == 0 && Transition_Apex == true) {
+
+            Transitioning = false;
+            Transition_Apex = false;
+
+        }
 
     }
 
@@ -1300,9 +1115,9 @@ public class Game extends JFrame implements KeyListener {
     }
 
 
-    public int[][] Load_Map(int Map_to_go_to) {
+    public static int[][] Load_Map(int Map_to_go_to) {
 
-
+    
         boomerang_active = false;
 
 

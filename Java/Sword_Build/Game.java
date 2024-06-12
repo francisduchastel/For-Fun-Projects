@@ -1000,7 +1000,7 @@ public class Game extends JFrame implements KeyListener {
 
     private void startGameLoop() {
         // Create a timer to update the game periodically
-        Timer timer = new Timer(30, e -> update());
+        Clock timer = new Clock(30, e -> update());
         timer.start();
     }
 
