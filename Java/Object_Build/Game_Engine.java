@@ -1,3 +1,5 @@
+import java.util.Map;
+
 public class Game_Engine {
 
 
@@ -181,7 +183,7 @@ public class Game_Engine {
     int character_x, int character_y, int grapple_speed, int Moving_Direction, int character_height, int character_width, int[][] Map_Parts) {
 
 
-        int[] values = new int[5];
+        int[] values = new int[6];
         //character_x
         //character_y
         //grapple_x
@@ -279,7 +281,7 @@ public class Game_Engine {
     public int[] Update_Boomerang(boolean boomerang_active, int boomerang_x, int boomerang_y, int boomerang_speed, int boomerang_drag_directional, int character_x, int character_y, int character_height,
         int character_width, boolean boomerang_state, int boomerang_size, int boomerang_drag) {
 
-        int[] values = new int[5];
+        int[] values = new int[6];
         //boomerang_x
         //boomerang_y
         //boomerang_speed
@@ -497,11 +499,41 @@ public class Game_Engine {
                 } else if (Map_Parts[z][4] == 6 && grind_gotten == true) { // grind rails
 
                     if (Upwards_velocity > 0 && Map_Parts[z][5] == 1) {
-                        Set_Grind_State(0, Map_Parts[z][1]);
+
+                        grind_mode = true;
+                        Frictionless = true;
+                        Upwards_velocity = 0;
+                        Sideways_velocity = Moving_Direction * grind_speed;
+                        character_y = Map_Parts[z][1] - character_height;
+                        Jump_State = "Grounded";
+                        Jumped = false;
+                        grapple_number = grapple_number_max;
+
+
                     } else if (Map_Parts[z][5] == 2) {
-                        Set_Grind_State(Moving_Direction * grind_speed, Map_Parts[z][1]);
+
+                        grind_mode = true;
+                        Frictionless = true;
+                        Upwards_velocity = Moving_Direction * grind_speed;
+                        Sideways_velocity = Moving_Direction * grind_speed;
+                        character_y = Map_Parts[z][1] - character_height;
+                        Jump_State = "Grounded";
+                        Jumped = false;
+                        grapple_number = grapple_number_max;
+
+
                     } else if (Map_Parts[z][5] == 3) {
-                        Set_Grind_State(-1 * Moving_Direction * grind_speed, Map_Parts[z][1]);
+
+                        grind_mode = true;
+                        Frictionless = true;
+                        Upwards_velocity = -1 * Moving_Direction * grind_speed;
+                        Sideways_velocity = Moving_Direction * grind_speed;
+                        character_y = Map_Parts[z][1] - character_height;
+                        Jump_State = "Grounded";
+                        Jumped = false;
+                        grapple_number = grapple_number_max;
+
+
                     }
 
 
@@ -604,24 +636,17 @@ public class Game_Engine {
 
     }
 
-    public void Set_Grind_State(int Up_Movement, int Map_Parts_needed) {
 
-        grind_mode = true;
-        Frictionless = true;
-        Upwards_velocity = Up_Movement;
-        Sideways_velocity = Moving_Direction * grind_speed;
-        if (Up_Movement == 0) {
-            character_y = Map_Parts_needed - character_height;
-        }
-        Jump_State = "Grounded";
-        Jumped = false;
-        grapple_number = grapple_number_max;
-
-    }
-
-    public void Update_Camera() {
+    public int[][][] Update_Camera(boolean Cam_Detached, int character_x, int character_y, int Screen_Width, int Screen_height, int character_width, int character_height, int grapple_x, 
+    int grapple_y, int boomerang_x, int boomerang_y, int[][] Map_Parts) {
         
+        int Cam_velocity_horizontal = 0;
+        int Cam_velocity_vertical = 0;
+
+
         if (Cam_Detached == false) {
+
+            
 
             if (character_x >= (Screen_Width/2)) {
 
@@ -630,10 +655,6 @@ public class Game_Engine {
             } else if (character_x <= (Screen_Width/2)) {
 
                 Cam_velocity_horizontal = (Screen_Width/2 - character_x)/10;
-
-            } else {
-
-                Cam_velocity_horizontal = 0;
 
             }
 
@@ -645,19 +666,34 @@ public class Game_Engine {
 
                 Cam_velocity_vertical = (Screen_height/2 - character_y)/10;
 
-            } else {
-
-                Cam_velocity_vertical = 0;
-
             }
 
         }
 
 
-        Move_Cam_Horizontal(Cam_velocity_horizontal);
-        Move_Cam_Vertical(Cam_velocity_vertical);
+        int[][][] values = Move_Cam_Horizontal(Cam_velocity_horizontal, character_x, Screen_Width, character_width, Cam_Detached, grapple_x, boomerang_x, Map_Parts);
+        character_x = values[0][0][0];
+        grapple_x = values[1][0][0];
+        boomerang_x = values[2][0][0];
+        Map_Parts = values[3];
+        
+        int[][][] values1 = Move_Cam_Vertical(Cam_velocity_vertical, character_y, Screen_height, character_height, Cam_Detached, grapple_y, boomerang_y, Map_Parts);
+        character_y = values1[0][0][0];
+        grapple_y = values1[1][0][0];
+        boomerang_y = values1[2][0][0];
+        Map_Parts = values1[3];
 
-        return;
+        int[][][] values2 = new int[7][Map_Parts.length][Map_Parts[0].length];
+
+        values2[0][0][0] = character_x;
+        values2[1][0][0] = character_y;
+        values2[2][0][0] = grapple_x;
+        values2[3][0][0] = grapple_y;
+        values2[4][0][0] = boomerang_x;
+        values2[5][0][0] = boomerang_y;
+        values2[6] = Map_Parts;
+
+        return values2;
     }
 
     private Boolean CollisionCheck(int obj1_x, int obj1_y, int obj1_width, int obj1_height, int obj2_x, int obj2_y, int obj2_width, int obj2_height) {
@@ -702,7 +738,11 @@ public class Game_Engine {
         return Does_Collide;
     }
 
-    private void Move_Cam_Horizontal(int amount) {
+    private int[][][] Move_Cam_Horizontal(int amount, int character_x, int Screen_Width, int character_width, boolean Cam_Detached, int grapple_x, int boomerang_x, int[][] Map_Parts) {
+
+        
+        int[][][] values = new int[4][Map_Parts.length][Map_Parts[0].length];
+
 
         if (character_x >= 0 && character_x <= (Screen_Width - character_width - 12) || Cam_Detached == false) {
             character_x += amount;
@@ -721,10 +761,20 @@ public class Game_Engine {
         }
 
 
+        values[0][0][0] = character_x;
+        values[1][0][0] = grapple_x;
+        values[2][0][0] = boomerang_x;
+        values[3] = Map_Parts;
+
+        return values;
+
 
     }
 
-    private void Move_Cam_Vertical(int amount) {
+    private int[][][] Move_Cam_Vertical(int amount, int character_y, int Screen_height, int character_height, boolean Cam_Detached, int grapple_y, int boomerang_y, int[][] Map_Parts) {
+
+
+        int[][][] values = new int[4][Map_Parts.length][Map_Parts[0].length];
 
         if (character_y >= 0 && character_y <= (Screen_height - character_height - 40) || Cam_Detached == false) {
             character_y += amount;
@@ -742,6 +792,54 @@ public class Game_Engine {
             }
         }
 
+        values[0][0][0] = character_y;
+        values[1][0][0] = grapple_y;
+        values[2][0][0] = boomerang_y;
+        values[3] = Map_Parts;
+
+        return values;
+
+
+    }
+
+    public int[][][] Camera_Center(int character_x, int character_y, int Screen_Width, int Screen_height, int character_height, int character_width, boolean Cam_Detached, int grapple_x,
+    int grapple_y, int boomerang_x, int boomerang_y, int[][] Map_Parts) {
+
+        int x_shift = Screen_Width/2 - character_x;
+        int y_shift = Screen_height/2 - character_y;
+
+
+        int[][][] values1 = Move_Cam_Horizontal(x_shift, character_x, Screen_Width, character_width, Cam_Detached, grapple_x, boomerang_x, Map_Parts);
+        character_x = values1[0][0][0];
+        grapple_x = values1[1][0][0];
+        boomerang_x = values1[2][0][0];
+        Map_Parts = values1[3];
+        int[][][] values2 = Move_Cam_Vertical(y_shift, character_y, Screen_height, character_height, Cam_Detached, grapple_y, boomerang_y, Map_Parts);
+        character_y = values2[0][0][0];
+        grapple_y = values2[1][0][0];
+        boomerang_y = values2[2][0][0];
+        Map_Parts = values2[3];
+
+
+        //character_x
+        //character_y
+        //grapple_x
+        //grapple_y
+        //boomerang_x
+        //boomerang_y
+        //Map_Parts
+
+        int[][][] values = new int[7][Map_Parts.length][Map_Parts[0].length];
+
+        values[0][0][0] = character_x;
+        values[1][0][0] = character_y;
+        values[2][0][0] = grapple_x;
+        values[3][0][0] = grapple_y;
+        values[4][0][0] = boomerang_x;
+        values[5][0][0] = boomerang_y;
+        values[6] = Map_Parts;
+
+        return values;
 
     }
 

@@ -345,8 +345,19 @@ public class Game extends JFrame implements KeyListener {
                 Falling = false;
             }
             //falling
+
     
-            Engine.Update_Camera();
+            int[][][] values2 = Engine.Update_Camera(Cam_Detached, character_x, character_y, Screen_Width, Screen_height, character_width, character_height, grapple_x, grapple_y, boomerang_x, boomerang_y, 
+                                    Map_Parts);
+
+            character_x = values2[0][0][0];
+            character_y = values2[1][0][0];
+            grapple_x = values2[2][0][0];
+            grapple_y = values2[3][0][0];
+            boomerang_x = values2[4][0][0];
+            boomerang_y = values2[5][0][0];
+            Map_Parts = values2[6];
+
 
             if (Transitioning == true) {
                 Transition_Value = Engine.Update_Transition(Transition_Value, Transition_Apex, Map_Parts, Map_Destination, Spawn_Value, Transitioning);
@@ -357,6 +368,7 @@ public class Game extends JFrame implements KeyListener {
                     Map_Parts = Load_Map(Map_Destination);
                     
                     Load_Spawn(Map_Parts, Spawn_Value);
+                    System.out.println(Map_Destination + "  " + Spawn_Value);
         
         
                 }
@@ -741,7 +753,16 @@ public class Game extends JFrame implements KeyListener {
                 character_x = Map_Parts[i][0];
                 character_y = Map_Parts[i][1];
 
-                Camera_Center(character_x, character_y);
+                int[][][] values = Engine.Camera_Center(character_x, character_y, Screen_Width, Screen_height, character_height, character_width, Cam_Detached, grapple_x, grapple_y, boomerang_x, boomerang_y, Map_Parts);
+
+                character_x = values[0][0][0];
+                character_y = values[1][0][0];
+                grapple_x = values[2][0][0];
+                grapple_y = values[3][0][0];
+                boomerang_x = values[4][0][0];
+                boomerang_y = values[5][0][0];
+                Map_Parts = values[6];
+
 
                 Upwards_velocity = 20;
 
@@ -755,18 +776,7 @@ public class Game extends JFrame implements KeyListener {
 
     }
 
-    public void Camera_Center(int character_x, int character_y) {
-
-        int x_shift = Screen_Width/2 - character_x;
-        int y_shift = Screen_height/2 - character_y;
-
-
-        Move_Cam_Horizontal(x_shift);
-        Move_Cam_Vertical(y_shift);
-
-        return;
-
-    }
+    
 
 
     public static void main(String[] args) {
