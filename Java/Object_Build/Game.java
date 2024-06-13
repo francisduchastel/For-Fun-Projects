@@ -16,6 +16,8 @@ public class Game extends JFrame implements KeyListener {
     Painter Paint = new Painter();
 
     Game_Engine Engine = new Game_Engine();
+
+    Listener Listen = new Listener();
     
     
     //character location values
@@ -41,7 +43,6 @@ public class Game extends JFrame implements KeyListener {
     public static int Sideways_velocity = 0;
     public static Boolean Falling = false;
     public static Boolean Jumped = false;
-    public static Boolean Walking = false;
     public static int Walk_Timer = 0;
     public static int Moving_Direction = 0; // Left = -1, Right = +1
     public static String Character_Facing_Direction = "Right";
@@ -120,9 +121,6 @@ public class Game extends JFrame implements KeyListener {
 
     public static int[][] Map_Parts = new int[0][0];
 
-
-
-
     //Menu properties
     public static boolean In_Title = true;
     public static boolean In_Menu = false;
@@ -180,7 +178,6 @@ public class Game extends JFrame implements KeyListener {
 
                 } else if (In_Title == true) {
 
-
                     Paint.DrawTitle(g, Max_Button_Index_Horizontal, Max_Button_Index_Vertical, Button_Index_Horizontal, Button_Index_Vertical, Screen_Width, In_Title);
 
                 }
@@ -206,11 +203,10 @@ public class Game extends JFrame implements KeyListener {
 
     public void update() {
 
-
         if (In_Title == false) {
 
             if (frozen == false) {
-                int[] values = Engine.Update_Character(Walking, character_x, Sideways_velocity, character_y, Friction, Frictionless, Upwards_velocity, Jump_State, grapple_active, Gravity);
+                int[] values = Engine.Update_Character(character_x, Sideways_velocity, character_y, Friction, Frictionless, Upwards_velocity, Jump_State, grapple_active, Gravity);
                 character_x = values[0];
                 character_y = values[1];
                 Sideways_velocity = values[2];
@@ -282,69 +278,51 @@ public class Game extends JFrame implements KeyListener {
             } else {
                 grapple_active = false;
             }
-            //grapple_active
             grapple_x = values1[1];
-            //grapple_x
             grapple_y = values1[2];
-            //grapple_y
             Sideways_velocity = values1[3];
-            //sideways_velocity
             Upwards_velocity = values1[4];
-            //upwards_velocity
             character_x = values1[5];
-            //character_x
             character_y = values1[6];
-            //character_y
             if (values1[7] == 1) {
                 Frictionless = true;
             } else {
                 Frictionless = false;
             }
-            //frictionless
             Moving_Direction = values1[8];
-            //moving_direction
             if (values1[9] == 1) {
                 Character_Facing_Direction = "Right";
             } else if (values1[9] == 0) {
                 Character_Facing_Direction = "Left";
             }
-            //character_facing_direction
             if (values1[10] == 1) {
                 Jump_State = "Jumping";
             } else if (values1[10] == 0) {
                 Jump_State = "Grounded";
             }
-            //jump_state
             if (values1[11] == 1) {
                 Jumped = true;
             } else {
                 Jumped = false;
             }
-            //jumped
             grapple_number = values1[12];
-            //grapple_number
             Spawn_Value = values1[13];
-            //spawn_value
             Map_Destination = values1[14];
-            //map_destination
             if (values1[15] == 1) {
                 Transitioning = true;
             } else {
                 Transitioning = false;
             }
-            //transitioning
             if (values1[16] == 1) {
                 grind_mode = true;
             } else {
                 grind_mode = false;
             }
-            //grind_mode
             if (values1[17] == 1) {
                 Falling = true;
             } else {
                 Falling = false;
             }
-            //falling
 
     
             int[][][] values2 = Engine.Update_Camera(Cam_Detached, character_x, character_y, Screen_Width, Screen_height, character_width, character_height, grapple_x, grapple_y, boomerang_x, boomerang_y, 
@@ -368,7 +346,6 @@ public class Game extends JFrame implements KeyListener {
                     Map_Parts = Load_Map(Map_Destination);
                     
                     Load_Spawn(Map_Parts, Spawn_Value);
-                    System.out.println(Map_Destination + "  " + Spawn_Value);
         
         
                 }
@@ -409,217 +386,86 @@ public class Game extends JFrame implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         
-        if (keyCode == KeyEvent.VK_UP) {
-            
-            if (In_Title == false && In_Menu == false) {
-
-                if (Jumped == false && grapple_active == false) {
-                    Jump_State = "Jumping";
-                    Jumped = true;
-                    Upwards_velocity = -15;
-                }
-
-                if (grind_mode == true) {
-                    grind_mode = false;
-                }
-
-
-            } else {
-
-                Button_Index_Vertical--;
-
-                Button_Index_Vertical %= Max_Button_Index_Vertical;
-
-            }
-            
-
-        }
-
-        if (keyCode == KeyEvent.VK_DOWN) {
-
-            if (In_Title == false && In_Menu == false) {
-
-            } else {
-
-                Button_Index_Vertical++;
-
-                Button_Index_Vertical %= Max_Button_Index_Vertical;
-
-            }
-
-        }
-
-        if (keyCode == KeyEvent.VK_LEFT) {
-            
-            if (In_Title == false && In_Menu == false) {
-
-                if (grapple_active == false) {
-                    Sideways_velocity = -1 * Walk_Speed;
-                    Moving_Direction = -1;
-                    Character_Facing_Direction = "Left";
-                }
-
-                if (grind_mode == true) {
-                    Sideways_velocity = Moving_Direction * grind_speed;
-                }
-
-            } else {
-
-                Button_Index_Horizontal--;
-
-                Button_Index_Horizontal %= Max_Button_Index_Horizontal;
-
-            }
-            
-        }
-        
-        if (keyCode == KeyEvent.VK_RIGHT) {
-            
-
-            if (In_Title == false && In_Menu == false) {
-
-
-                if (grapple_active == false) {
-                    Sideways_velocity = Walk_Speed;
-                    Moving_Direction = 1;
-                    Character_Facing_Direction = "Right";
-                }
-
-
-                if (grind_mode == true) {
-                    Sideways_velocity = Moving_Direction * grind_speed;
-                }
-
-            } else {
-
-                
-                Button_Index_Horizontal++;
-
-                Button_Index_Horizontal %= Max_Button_Index_Horizontal;
-
-            }
-        }
-
-        if (keyCode == KeyEvent.VK_SHIFT) {
-            
-            if (sword_state == 0) {
-
-                sword_state = 1;
-                sword_timer = ready_time;
-
-                if (Jump_State.equals("Grounded")) {
-                    frozen = true;
-                }
-
-            }
-
-        }
-
-        if (keyCode == KeyEvent.VK_SPACE) {
-
-            if (grapple_number > 0 && grind_mode == false) {
-
-                grapple_number--;
-
-                grapple_active = true;
-                grapple_state = false;
-                grapple_x = character_x + 15;
-                grapple_y = character_y + 30;
-    
-                Upwards_velocity = 0;
-                Sideways_velocity = 0;
-            }
-
-
-
-        }
-
-        if (keyCode == KeyEvent.VK_ENTER) {
-
-            if (In_Title == true) {
-                
-
-                if (Button_Index_Vertical == 0) {
-                    In_Title = false;
-                } else if (Button_Index_Vertical == 1) {
-                    In_Title = false;
-                } else if (Button_Index_Vertical == 2) {
-                    In_Title = false;
-                } else {
-                    System.exit(0);
-                }
-
-
-            }
-
-        }
-
-        if (keyCode == KeyEvent.VK_CONTROL) {
-
-            if (boomerang_active == false) {
-                boomerang_active = true;
-                boomerang_x = character_x + (character_width / 2);
-                boomerang_y = character_y + (character_height / 2);
-    
-                boomerang_speed = Moving_Direction * boomerang_speed_max;
-                boomerang_drag_directional = Moving_Direction * boomerang_drag;
-    
-                boomerang_state = false;
-            }
-
-
-
-        }
-
-        if (keyCode == KeyEvent.VK_ESCAPE) {
-
-            if (In_Title == false && In_Menu == false) {
-
-                In_Title = true;
-
-            }
-
-        }
-
-        
-        if (keyCode == KeyEvent.VK_NUMPAD2) {
-
-            if (character_y >= 0 && character_y <= Screen_Width) {
-                Cam_velocity_vertical = -5;
-                Cam_Detached = true;
-            }
-
-
-        }
-
-        if (keyCode == KeyEvent.VK_NUMPAD4) {
-
-            if (character_y >= 0 && character_y <= Screen_Width) {
-                Cam_velocity_horizontal = 5;
-                Cam_Detached = true;
-            }
-        }
-
-        if (keyCode == KeyEvent.VK_NUMPAD6) {
-
-            if (character_x >= 0 && character_x <= Screen_Width) {
-                Cam_velocity_horizontal = -5;
-                Cam_Detached = true;
-            }
-        }
-
-        if (keyCode == KeyEvent.VK_NUMPAD8) {
-
-            if (character_y >= 0 && character_y <= Screen_Width) {
-                Cam_velocity_vertical = 5;
-                Cam_Detached = true;
-            }
-        }
-
+        int[] values = Listen.ButtonPressed(keyCode, In_Title, In_Menu, Jumped, grapple_active, grind_mode, Button_Index_Vertical, Button_Index_Horizontal, Max_Button_Index_Horizontal, 
+        Max_Button_Index_Vertical, Sideways_velocity, Walk_Speed, Moving_Direction, grind_speed, sword_state, ready_time, Jump_State, frozen, grapple_number, grapple_state, boomerang_active, 
+        boomerang_speed_max, boomerang_drag, character_x, character_y, Screen_height, Screen_Width, character_height, character_width, Upwards_velocity, Character_Facing_Direction, 
+        sword_timer, grapple_x, grapple_y, boomerang_x, boomerang_y, boomerang_speed, boomerang_drag_directional, boomerang_state, Cam_velocity_horizontal, Cam_velocity_vertical, Cam_Detached,
+        Friction);
  
-       
-        
+        if (values[0] == 1) {
+            Jump_State = "Jumping";
+        } else if (values[0] == 0) {
+            Jump_State = "Grounded";
+        }
+        if (values[1] == 1) {
+            Jumped = true;
+        } else {
+            Jumped = false;
+        }
+        Upwards_velocity = values[2];
+        Sideways_velocity = values[3];
+        if (values[4] == 1) {
+            grind_mode = true;
+        } else {
+            grind_mode = false;
+        }
+        Button_Index_Vertical = values[5];
+        Button_Index_Horizontal = values[6];
+        Moving_Direction = values[7];
+        if (values[8] == 1) {
+            Character_Facing_Direction = "Right";
+        } else if (values[8] == 0) {
+            Character_Facing_Direction = "Left";
+        }
+        sword_state = values[9];
+        sword_timer = values[10];
+        if (values[11] == 1) {
+            frozen = true;
+        } else {
+            frozen = false;
+        }
+        grapple_number = values[12];
+        if (values[13] == 1) {
+            grapple_active = true;
+        } else {
+            grapple_active = false;
+        }
+        if (values[14] == 1) {
+            grapple_state = true;
+        } else {
+            grapple_state = false;
+        }
+        grapple_x = values[15];
+        grapple_y = values[16];
+        if (values[17] == 1) {
+            In_Title = true;
+        } else {
+            In_Title = false;
+        }
+        boomerang_x = values[18];
+        boomerang_y = values[19];
+        if (values[20] == 1) {
+            boomerang_state = true;
+        } else {
+            boomerang_state = false;
+        }
+        boomerang_speed = values[21];
+        boomerang_drag_directional = values[22];
+        if (values[23] == 1) {
+            boomerang_active = true;
+        } else {
+            boomerang_active = false;
+        }
+        Cam_velocity_vertical = values[24];
+        Cam_velocity_horizontal = values[25];
+        if (values[26] == 1) {
+            Cam_Detached = true;
+        } else {
+            Cam_Detached = false;
+        }
+
         repaint();
+
     }
 
     @Override
@@ -627,69 +473,14 @@ public class Game extends JFrame implements KeyListener {
 
         int keyCode = e.getKeyCode();
 
-        if (keyCode == KeyEvent.VK_LEFT) {
-            
-            if (In_Title == false && In_Menu == false) {
-                Friction = 3;
+        int[] values = Listen.ButtonReleased(keyCode, In_Title, In_Menu, Friction, Upwards_velocity, Cam_Detached);
 
-            }
-            
-        }
-        
-        if (keyCode == KeyEvent.VK_RIGHT) {
-            
-            if (In_Title == false && In_Menu == false) {
-                Friction = -3;
-                
-            }
-            
-            
-        }
-
-        if (keyCode == KeyEvent.VK_UP) {
-
-            if (In_Title == false && In_Menu == false) {
-                
-                if (Upwards_velocity >= -5 && Upwards_velocity < 0) {
-                    Upwards_velocity = 0;
-                } else if (Upwards_velocity < -5) {
-                    Upwards_velocity += 5;
-                }
-                
-            }
-
-
-
-        }
-
-        if (keyCode == KeyEvent.VK_SHIFT) {
-            
-            Walking = false;
-
-        }
-
-        if (keyCode == KeyEvent.VK_NUMPAD2) {
-
+        Friction = values[0];
+        Upwards_velocity = values[1];
+        if (values[2] == 1) {
+            Cam_Detached = true;
+        } else {
             Cam_Detached = false;
-
-        }
-
-        if (keyCode == KeyEvent.VK_NUMPAD4) {
-
-            Cam_Detached = false;
-
-        }
-
-        if (keyCode == KeyEvent.VK_NUMPAD6) {
-
-            Cam_Detached = false;
-
-        }
-
-        if (keyCode == KeyEvent.VK_NUMPAD8) {
-
-            Cam_Detached = false;
-
         }
 
         

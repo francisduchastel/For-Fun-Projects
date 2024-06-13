@@ -12,7 +12,8 @@ public class Painter {
     }
 
 
-        public void DrawTitle(Graphics g, int Max_Button_Index_Horizontal, int Max_Button_Index_Vertical, int Button_Index_Horizontal, int Button_Index_Vertical, int Screen_Width, Boolean In_Title) {
+    public void DrawTitle(Graphics g, int Max_Button_Index_Horizontal, int Max_Button_Index_Vertical, int Button_Index_Horizontal, int Button_Index_Vertical, int Screen_Width, 
+    Boolean In_Title) {
 
         Max_Button_Index_Horizontal = 1;
         Max_Button_Index_Vertical = 4;
@@ -42,6 +43,7 @@ public class Painter {
 
     public void Draw_Menu_Selection(Graphics g, boolean In_Title, int Screen_Width, int Button_Index_Horizontal, int Button_Index_Vertical) {
         //true for Title, false for Inv
+
 
         if (In_Title == true) {
 

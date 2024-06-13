@@ -27,18 +27,14 @@ public class Game_Engine {
 
     }
 
-    public int[] Update_Character(boolean Walking, int character_x, int Sideways_velocity, int character_y, int Friction, boolean Frictionless, int Upwards_velocity, String Jump_State, boolean grapple_active,
+    public int[] Update_Character(int character_x, int Sideways_velocity, int character_y, int Friction, boolean Frictionless, int Upwards_velocity, String Jump_State, boolean grapple_active,
         int Gravity) {
             //character movement
         //sideways movement
 
         int[] values = new int[4];
         
-        if (Walking == true && Sideways_velocity != 0) {
-            character_x += (Sideways_velocity/2);
-        } else {
-            character_x += Sideways_velocity;
-        }
+        character_x += Sideways_velocity;
         
         if (Frictionless == false) {
             
