@@ -17,7 +17,7 @@ public class Game extends JFrame implements KeyListener {
 
     Painter Paint = new Painter(A);
 
-    Game_Engine Engine = new Game_Engine();
+    Game_Engine Engine = new Game_Engine(A);
 
     Listener Listen = new Listener();
 
@@ -100,142 +100,34 @@ public class Game extends JFrame implements KeyListener {
 
     public void update() {
 
-        if (In_Title == false) {
+        if (A.g_In_Title() == false) {
 
-            if (frozen == false) {
-                int[] values = Engine.Update_Character(character_x, Sideways_velocity, character_y, Friction, Frictionless, Upwards_velocity, Jump_State, grapple_active, Gravity);
-                character_x = values[0];
-                character_y = values[1];
-                Sideways_velocity = values[2];
-                Upwards_velocity = values[3];
+            if (A.g_frozen() == false) {
+                Engine.Update_Character();
             }
             
 
-            if (grapple_gotten == true) {
-                int[] values = Engine.Update_Grapple(grapple_active, grapple_state, grapple_x, Screen_Width, grapple_y, Screen_height, grapple_number, grapple_size, character_x, 
-                character_y, grapple_speed, Moving_Direction, character_height, character_width, Map_Parts);
-
-                character_x = values[0];
-                character_y = values[1];
-                grapple_x = values[2];
-                grapple_y = values[3];
-                if (values[4] == 1) {
-                    grapple_state = true;
-                } else {
-                    grapple_state = false;
-                }
-                if (values[5] == 1) {
-                    grapple_active = true;
-                } else {
-                    grapple_active = false;
-                }
+            if (A.g_grapple_gotten() == true) {
+                Engine.Update_Grapple();
 
             }
 
-            if (boomerang_gotten == true) {
-                int[] values = Engine.Update_Boomerang(boomerang_active, boomerang_x, boomerang_y, boomerang_speed, boomerang_drag_directional, character_x, character_y, character_height, character_width, 
-                boomerang_state, boomerang_size, boomerang_drag);
+            if (A.g_boomerang_gotten() == true) {
+                Engine.Update_Boomerang();
 
-                boomerang_x = values[0];
-                boomerang_y = values[1];
-                boomerang_speed = values[2];
-                if (values[3] == 1) {
-                    boomerang_active = true;
-                } else {
-                    boomerang_active = false;
-                }
-                if (values[4] == 1) {
-                    boomerang_state = true;
-                } else {
-                    boomerang_state = false;
-                }
-                boomerang_drag_directional = values[5];
 
             }
 
-            int[][][] values = Engine.Update_Sword(sword_state, hit_boxes, Moving_Direction, character_x, character_y, character_width, sword_length, sword_ready_length, character_height, sword_width, 
-                                sword_timer, swing_time, ready_time, frozen);
-
-            sword_state = values[0][0][0];
-            sword_timer = values[1][0][0];
-            hit_boxes = values[2];
-            if (values[3][0][0] == 1) {
-                frozen = true;
-            } else {
-                frozen = false;
-            }
+            Engine.Update_Sword();
 
     
-            int[] values1 = Engine.Update_Collision(Map_Parts, character_x, character_y, character_height, character_width, grapple_active, grapple_x, grapple_y, grind_mode, Sideways_velocity, 
-            Moving_Direction, Frictionless, Character_Facing_Direction, Upwards_velocity, Jump_State, Jumped, grapple_number, grapple_number_max, Spawn_Value, Transitioning, grind_gotten, 
-            Map_Destination, grind_speed);
-
-            if (values1[0] == 1) {
-                grapple_active = true;
-            } else {
-                grapple_active = false;
-            }
-            grapple_x = values1[1];
-            grapple_y = values1[2];
-            Sideways_velocity = values1[3];
-            Upwards_velocity = values1[4];
-            character_x = values1[5];
-            character_y = values1[6];
-            if (values1[7] == 1) {
-                Frictionless = true;
-            } else {
-                Frictionless = false;
-            }
-            Moving_Direction = values1[8];
-            if (values1[9] == 1) {
-                Character_Facing_Direction = "Right";
-            } else if (values1[9] == 0) {
-                Character_Facing_Direction = "Left";
-            }
-            if (values1[10] == 1) {
-                Jump_State = "Jumping";
-            } else if (values1[10] == 0) {
-                Jump_State = "Grounded";
-            }
-            if (values1[11] == 1) {
-                Jumped = true;
-            } else {
-                Jumped = false;
-            }
-            grapple_number = values1[12];
-            Spawn_Value = values1[13];
-            Map_Destination = values1[14];
-            if (values1[15] == 1) {
-                Transitioning = true;
-            } else {
-                Transitioning = false;
-            }
-            if (values1[16] == 1) {
-                grind_mode = true;
-            } else {
-                grind_mode = false;
-            }
-            if (values1[17] == 1) {
-                Falling = true;
-            } else {
-                Falling = false;
-            }
+            Engine.Update_Collision();
 
     
-            int[][][] values2 = Engine.Update_Camera(Cam_Detached, character_x, character_y, Screen_Width, Screen_height, character_width, character_height, grapple_x, grapple_y, boomerang_x, boomerang_y, 
-                                    Map_Parts);
-
-            character_x = values2[0][0][0];
-            character_y = values2[1][0][0];
-            grapple_x = values2[2][0][0];
-            grapple_y = values2[3][0][0];
-            boomerang_x = values2[4][0][0];
-            boomerang_y = values2[5][0][0];
-            Map_Parts = values2[6];
-
+            Engine.Update_Camera();
 
             if (Transitioning == true) {
-                Transition_Value = Engine.Update_Transition(Transition_Value, Transition_Apex, Map_Parts, Map_Destination, Spawn_Value, Transitioning);
+                Engine.Update_Transition();
 
                 if (Transition_Value == 255) {
                     Transition_Apex = true;

@@ -3,51 +3,44 @@ import java.util.Map;
 public class Game_Engine {
 
 
-    public static void Main(String args[]) {
-
+    public Game_Engine(Archive Arc) {
+        this.A = Arc;
     }
 
-
+    Archive A;
     
-    public int Update_Transition(int Transition_Value, boolean Transition_Apex, int[][] Map_Parts, int Map_Destination, int Spawn_Value, boolean Transitioning) {
+    public void Update_Transition() {
 
-        if (Transition_Apex == false) {
-            Transition_Value = Clock.Timer_ticker(Transition_Value, 15, 256);
+        if (A.g_Transition_Apex() == false) {
+            A.s_Transition_Value(Clock.Timer_ticker(A.g_Transition_Value(), 15, 256));
 
             
 
         } else {
 
-            Transition_Value = Clock.Timer_ticker(Transition_Value, -15, 256);
+            A.s_Transition_Value(Clock.Timer_ticker(A.g_Transition_Value(), -15, 256));
 
         }
 
-
-        return Transition_Value;
-
     }
 
-    public int[] Update_Character(int character_x, int Sideways_velocity, int character_y, int Friction, boolean Frictionless, int Upwards_velocity, String Jump_State, boolean grapple_active,
-        int Gravity) {
-            //character movement
-        //sideways movement
+    public void Update_Character() {
 
-        int[] values = new int[4];
         
-        character_x += Sideways_velocity;
+        A.s_character_x(A.g_character_x() + A.g_Sideways_velocity());
         
-        if (Frictionless == false) {
+        if (A.g_Frictionless() == false) {
             
-            if ( (Sideways_velocity > 0 && Friction < 0) || (Sideways_velocity < 0 && Friction > 0)) {
+            if ( (A.g_Sideways_velocity() > 0 && A.g_Friction() < 0) || (A.g_Sideways_velocity() < 0 && A.g_Friction() > 0)) {
             
-                if (Sideways_velocity <= -Friction) {
-                    Sideways_velocity = 0;
+                if (A.g_Sideways_velocity() <= -A.g_Friction()) {
+                    A.s_Sideways_velocity(0);
                 } else {
-                    Sideways_velocity += Friction;
+                    A.s_Sideways_velocity(A.g_Sideways_velocity() + A.g_Friction());
                 }
                 
             } else {
-                Friction = 0;
+                A.s_Friction(0);
             }
 
 
@@ -55,39 +48,23 @@ public class Game_Engine {
         
         //jumping
 
-        if (Upwards_velocity > 20) {
-            Upwards_velocity = 20;
-        } else if (Upwards_velocity < -50) {
-            Upwards_velocity = -50;
+        if (A.g_Upwards_velocity() > 20) {
+            A.s_Upwards_velocity(20);
+        } else if (A.g_Upwards_velocity() < -50) {
+            A.s_Upwards_velocity(-50);
         }
 
 
 
-        character_y += Upwards_velocity;
+        A.s_character_y( A.g_character_y() + A.g_Upwards_velocity());
 
-        if( Jump_State.equals("Jumping") && grapple_active == false) {
-            Upwards_velocity += Gravity;
+        if( A.g_Jump_State().equals("Jumping") && A.g_grapple_active() == false) {
+            A.s_Upwards_velocity(A.g_Upwards_velocity() + A.g_Gravity());
         } 
-
-
-        values[0] = character_x;
-        values[1] = character_y;
-        values[2] = Sideways_velocity;
-        values[3] = Upwards_velocity;
-
-        return values;
 
     }
 
-    public int[][][] Update_Sword(int sword_state, int[][] hit_boxes, int Moving_Direction, int character_x, int character_y, int character_width, int sword_length, int sword_ready_length, 
-        int character_height, int sword_width, int sword_timer, int swing_time, int ready_time, boolean frozen) {
-
-
-        int[][][] values = new int[4][10][4];
-        //sword state
-        //sword timer
-        //hit_boxes
-        //frozen
+    public void Update_Sword() {
 
         if (sword_state == 1 || sword_state == 3) {
 
@@ -158,34 +135,12 @@ public class Game_Engine {
 
         }
  
-        values[0][0][0] = sword_state;
-        //sword state
-        values[1][0][0] = sword_timer;
-        //sword timer
-        values[2] = hit_boxes;
-        //hit_boxes
-        if (frozen == true) {
-            values[3][0][0] = 1;
-        } else {
-            values[3][0][0] = 0;
-        }
-        //frozen
-
-        return values;
+    
 
     }
 
-    public int[] Update_Grapple(boolean grapple_active, boolean grapple_state, int grapple_x, int Screen_Width, int grapple_y, int Screen_height, int grapple_number, int grapple_size, 
-    int character_x, int character_y, int grapple_speed, int Moving_Direction, int character_height, int character_width, int[][] Map_Parts) {
+    public void Update_Grapple() {
 
-
-        int[] values = new int[6];
-        //character_x
-        //character_y
-        //grapple_x
-        //grapple_y
-        //grapple_state
-        //grapple_active
 
         if (grapple_active == true && grapple_state == false) {
 
@@ -227,24 +182,6 @@ public class Game_Engine {
 
         }
 
-        values[0] = character_x;
-        values[1] = character_y;
-        values[2] = grapple_x;
-        values[3] = grapple_y;
-        if (grapple_state == true) {
-            values[4] = 1;
-        } else {
-            values[4] = 0;
-        }
-        if (grapple_active == true) {
-            values[5] = 1;
-        } else {
-            values[5] = 0;
-        }
-
-
-        return values;
-
 
     }
 
@@ -274,17 +211,7 @@ public class Game_Engine {
 
     }
 
-    public int[] Update_Boomerang(boolean boomerang_active, int boomerang_x, int boomerang_y, int boomerang_speed, int boomerang_drag_directional, int character_x, int character_y, int character_height,
-        int character_width, boolean boomerang_state, int boomerang_size, int boomerang_drag) {
-
-        int[] values = new int[6];
-        //boomerang_x
-        //boomerang_y
-        //boomerang_speed
-        //boomerang_active
-        //boomerang_state
-        //boomerang_drag_directional
-        
+    public void Update_Boomerang() {
 
         if (boomerang_active == true) {
 
@@ -333,57 +260,11 @@ public class Game_Engine {
 
         }
 
-        //boomerang_x
-        //boomerang_y
-        //boomerang_speed
-        //boomerang_active
-        //boomerang_state
-        //boomerang_drag_directional
-
-        values[0] = boomerang_x;
-        values[1] = boomerang_y;
-        values[2] = boomerang_speed;
-        if (boomerang_active == true) {
-            values[3] = 1;
-        } else {
-            values[3] = 0;
-        }
-        if (boomerang_state == true) {
-            values[4] = 1;
-        } else {
-            values[4] = 0;
-        }
-        values[5] = boomerang_drag_directional;
-
-        return values;
-
     }
 
-    public int[] Update_Collision(int[][] Map_Parts, int character_x, int character_y, int character_height, int character_width, boolean grapple_active, int grapple_x, int grapple_y, boolean grind_mode,
-        int Sideways_velocity, int Moving_Direction, boolean Frictionless, String Character_Facing_Direction, int Upwards_velocity, String Jump_State, boolean Jumped, int grapple_number,
-        int grapple_number_max, int Spawn_Value, boolean Transitioning, boolean grind_gotten, int Map_Destination, int grind_speed) {
+    public int[] Update_Collision() {
+        
         boolean Falling = true;
-
-        int[] values = new int[18];
-        //grapple_active
-        //grapple_x
-        //grapple_y
-        //sideways_velocity
-        //upwards_velocity
-        //character_x
-        //character_y
-        //frictionless
-        //moving_direction
-        //character_facing_direction
-        //jump_state
-        //jumped
-        //grapple_number
-        //spawn_value
-        //map_destination
-        //transitioning
-        //grind_mode
-        //falling
-
 
         for (int z = 0; z < Map_Parts.length; z++) {
 
@@ -558,83 +439,10 @@ public class Game_Engine {
         }
 
 
-        if (grapple_active == true) {
-            values[0] = 1;
-        } else {
-            values[0] = 0;
-        }
-        //grapple_active
-        values[1] = grapple_x;
-        //grapple_x
-        values[2] = grapple_y;
-        //grapple_y
-        values[3] = Sideways_velocity;
-        //sideways_velocity
-        values[4] = Upwards_velocity;
-        //upwards_velocity
-        values[5] = character_x;
-        //character_x
-        values[6] = character_y;
-        //character_y
-        if (Frictionless == true) {
-            values[7] = 1;
-        } else {
-            values[7] = 0;
-        }
-        //frictionless
-        values[8] = Moving_Direction;
-        //moving_direction
-        if (Character_Facing_Direction.equals("Right")) {
-            values[9] = 1;
-        } else if (Character_Facing_Direction.equals("Left")) {
-            values[9] = 0;
-        }
-        //character_facing_direction
-        if (Jump_State.equals("Jumping")) {
-            values[10] = 1;
-        } else if (Jump_State.equals("Grounded")) {
-            values[10] = 0;
-        }
-        //jump_state
-        if (Jumped == true) {
-            values[11] = 1;
-        } else {
-            values[11] = 0;
-        }
-        //jumped
-        values[12] = grapple_number;
-        //grapple_number
-        values[13] = Spawn_Value;
-        //spawn_value
-        values[14] = Map_Destination;
-        //map_destination
-        if (Transitioning == true) {
-            values[15] = 1;
-        } else {
-            values[15] = 0;
-        }
-        //transitioning
-        if (grind_mode == true) {
-            values[16] = 1;
-        } else {
-            values[16] = 0;
-        }
-        //grind_mode
-        if (Falling == true) {
-            values[17] = 1;
-        } else {
-            values[17] = 0;
-        }
-        //falling
-
-
-        return values;
-
     }
 
 
-    public int[][][] Update_Camera(boolean Cam_Detached, int character_x, int character_y, int Screen_Width, int Screen_height, int character_width, int character_height, int grapple_x, 
-    int grapple_y, int boomerang_x, int boomerang_y, int[][] Map_Parts) {
+    public int[][][] Update_Camera() {
         
         int Cam_velocity_horizontal = 0;
         int Cam_velocity_vertical = 0;
@@ -667,29 +475,11 @@ public class Game_Engine {
         }
 
 
-        int[][][] values = Move_Cam_Horizontal(Cam_velocity_horizontal, character_x, Screen_Width, character_width, Cam_Detached, grapple_x, boomerang_x, Map_Parts);
-        character_x = values[0][0][0];
-        grapple_x = values[1][0][0];
-        boomerang_x = values[2][0][0];
-        Map_Parts = values[3];
+        Move_Cam_Horizontal(Cam_velocity_horizontal, character_x, Screen_Width, character_width, Cam_Detached, grapple_x, boomerang_x, Map_Parts);
+
         
-        int[][][] values1 = Move_Cam_Vertical(Cam_velocity_vertical, character_y, Screen_height, character_height, Cam_Detached, grapple_y, boomerang_y, Map_Parts);
-        character_y = values1[0][0][0];
-        grapple_y = values1[1][0][0];
-        boomerang_y = values1[2][0][0];
-        Map_Parts = values1[3];
+        Move_Cam_Vertical(Cam_velocity_vertical, character_y, Screen_height, character_height, Cam_Detached, grapple_y, boomerang_y, Map_Parts);
 
-        int[][][] values2 = new int[7][Map_Parts.length][Map_Parts[0].length];
-
-        values2[0][0][0] = character_x;
-        values2[1][0][0] = character_y;
-        values2[2][0][0] = grapple_x;
-        values2[3][0][0] = grapple_y;
-        values2[4][0][0] = boomerang_x;
-        values2[5][0][0] = boomerang_y;
-        values2[6] = Map_Parts;
-
-        return values2;
     }
 
     private Boolean CollisionCheck(int obj1_x, int obj1_y, int obj1_width, int obj1_height, int obj2_x, int obj2_y, int obj2_width, int obj2_height) {
@@ -734,10 +524,7 @@ public class Game_Engine {
         return Does_Collide;
     }
 
-    private int[][][] Move_Cam_Horizontal(int amount, int character_x, int Screen_Width, int character_width, boolean Cam_Detached, int grapple_x, int boomerang_x, int[][] Map_Parts) {
-
-        
-        int[][][] values = new int[4][Map_Parts.length][Map_Parts[0].length];
+    private void Move_Cam_Horizontal(int amount, int character_x, int Screen_Width, int character_width, boolean Cam_Detached, int grapple_x, int boomerang_x, int[][] Map_Parts) {
 
 
         if (character_x >= 0 && character_x <= (Screen_Width - character_width - 12) || Cam_Detached == false) {
@@ -757,20 +544,10 @@ public class Game_Engine {
         }
 
 
-        values[0][0][0] = character_x;
-        values[1][0][0] = grapple_x;
-        values[2][0][0] = boomerang_x;
-        values[3] = Map_Parts;
-
-        return values;
-
-
     }
 
-    private int[][][] Move_Cam_Vertical(int amount, int character_y, int Screen_height, int character_height, boolean Cam_Detached, int grapple_y, int boomerang_y, int[][] Map_Parts) {
+    private void Move_Cam_Vertical(int amount, int character_y, int Screen_height, int character_height, boolean Cam_Detached, int grapple_y, int boomerang_y, int[][] Map_Parts) {
 
-
-        int[][][] values = new int[4][Map_Parts.length][Map_Parts[0].length];
 
         if (character_y >= 0 && character_y <= (Screen_height - character_height - 40) || Cam_Detached == false) {
             character_y += amount;
@@ -788,54 +565,19 @@ public class Game_Engine {
             }
         }
 
-        values[0][0][0] = character_y;
-        values[1][0][0] = grapple_y;
-        values[2][0][0] = boomerang_y;
-        values[3] = Map_Parts;
-
-        return values;
-
-
     }
 
-    public int[][][] Camera_Center(int character_x, int character_y, int Screen_Width, int Screen_height, int character_height, int character_width, boolean Cam_Detached, int grapple_x,
-    int grapple_y, int boomerang_x, int boomerang_y, int[][] Map_Parts) {
+    public int[][][] Camera_Center() {
 
         int x_shift = Screen_Width/2 - character_x;
         int y_shift = Screen_height/2 - character_y;
 
 
-        int[][][] values1 = Move_Cam_Horizontal(x_shift, character_x, Screen_Width, character_width, Cam_Detached, grapple_x, boomerang_x, Map_Parts);
-        character_x = values1[0][0][0];
-        grapple_x = values1[1][0][0];
-        boomerang_x = values1[2][0][0];
-        Map_Parts = values1[3];
-        int[][][] values2 = Move_Cam_Vertical(y_shift, character_y, Screen_height, character_height, Cam_Detached, grapple_y, boomerang_y, Map_Parts);
-        character_y = values2[0][0][0];
-        grapple_y = values2[1][0][0];
-        boomerang_y = values2[2][0][0];
-        Map_Parts = values2[3];
+        Move_Cam_Horizontal(x_shift, character_x, Screen_Width, character_width, Cam_Detached, grapple_x, boomerang_x, Map_Parts);
+
+        Move_Cam_Vertical(y_shift, character_y, Screen_height, character_height, Cam_Detached, grapple_y, boomerang_y, Map_Parts);
 
 
-        //character_x
-        //character_y
-        //grapple_x
-        //grapple_y
-        //boomerang_x
-        //boomerang_y
-        //Map_Parts
-
-        int[][][] values = new int[7][Map_Parts.length][Map_Parts[0].length];
-
-        values[0][0][0] = character_x;
-        values[1][0][0] = character_y;
-        values[2][0][0] = grapple_x;
-        values[3][0][0] = grapple_y;
-        values[4][0][0] = boomerang_x;
-        values[5][0][0] = boomerang_y;
-        values[6] = Map_Parts;
-
-        return values;
 
     }
 

@@ -7,7 +7,12 @@ import java.awt.*;
 
 public class Painter {
 
-    static Archive A = new Archive();
+    public Painter(Archive Arc) {
+        
+        this.A = Arc;
+    }
+
+    Archive A;
 
     public void DrawTitle(Graphics g) {
 
